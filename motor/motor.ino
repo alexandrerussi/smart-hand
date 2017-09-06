@@ -11,16 +11,16 @@ SimpleTimer simpleTimer;
 Servo s;
 
 int concentracaoNecessaria = 30;
+int duracaoDelay = 1000;
+
 int atencao = 0;
+int posicaoAtual = 0;
 int intervaloPosicao = 10;
 
 bool motorLiberado = true;
 
-int posicaoAtual = 0;
-int duracaoDelay = 1000;
-
 int botao = 12;
-bool leituraBotao = false;
+bool botaoDesativado = false;
 
 void setup() {
 	pinMode(botao, INPUT);
@@ -55,7 +55,7 @@ void liberarMovimentacaoMotor()
 
 void atualizarMotor()
 {
-  atencao = mindwave.attention();
+  //atencao = mindwave.attention();
   
   if (atencao > concentracaoNecessaria)
   {
@@ -73,19 +73,14 @@ void atualizarMotor()
 
 void pressionarBotao()
 {
-  if (digitalRead(botao) == HIGH)
-  {
-    leituraBotao = true;
-  }
-  else if (digitalRead(botao) == LOW)
-  {
-    leituraBotao = false;
-  }
+	bool leituraBotao = digitalRead(botao);
+	
+	botaoDesativado = leituraBotao;
 }
 
 void alterarPosicaoServo(int intervaloReal)
 {
-  if ((motorLiberado == false) || (leituraBotao == true))
+  if (!motorLiberado || botaoDesativado)
 	return;
   
   Serial.println("alterarPosicaoServo");
@@ -105,7 +100,14 @@ void loop()
 
   mindwave.update(Serial, onMindwaveData);
   
+  if (Serial.available() > 0)
+  {
+	char valorRecebido = Serial.read();
+
+	atencao = (valorRecebido == '1') ? 31 : 0;
+  }
+  
   pressionarBotao();
 
-  atualizarMotor();
+  //atualizarMotor();
 }
