@@ -83,14 +83,14 @@ void pressionarBotao()
   }
 }
 
-void alterarPosicaoServo(int intervaloReal)
+void alterarPosicaoServo(intervaloPosicao)
 {
   if ((motorLiberado == false) || (leituraBotao == true))
 	return;
   
   Serial.println("alterarPosicaoServo");
   
-  posicaoAtual = constrain(posicaoAtual + intervaloReal, 0, 180);
+  posicaoAtual = constrain(posicaoAtual + intervaloPosicao, 0, 180);
 
   s.write(posicaoAtual);
 
@@ -106,6 +106,8 @@ void loop()
   mindwave.update(Serial, onMindwaveData);
   
   pressionarBotao();
+
+  alterarPosicaoServo();
 
   atualizarMotor();
 }
