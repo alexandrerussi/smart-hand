@@ -11,22 +11,22 @@ SimpleTimer simpleTimer;
 Servo s;
 
 int concentracaoNecessaria = 30;
+int duracaoDelay = 1000;
+
 int atencao = 0;
-int intervaloPosicao = 10;
+int posicaoAtual = 0;
+int intervaloPosicao = 180;
 
 bool motorLiberado = true;
 
-int posicaoAtual = 0;
-int duracaoDelay = 1000;
-
 int botao = 12;
-bool leituraBotao = false;
+bool botaoDesativado = false;
 
 void setup() {
-	pinMode(botao, INPUT);
-	
-	s.attach(SERVO);
-	Serial.begin(9600);
+  pinMode(botao, INPUT);
+  
+  s.attach(SERVO);
+  Serial.begin(9600);
   s.write(0); // Inicia motor posição zero
   Serial.begin(MINDWAVE_BAUDRATE);
 }
@@ -49,48 +49,48 @@ void onMindwaveData()
 
 void liberarMovimentacaoMotor()
 {
-	Serial.println("liberarMovimentacaoMotor");
-	motorLiberado = true;
+  Serial.println("liberarMovimentacaoMotor");
+  motorLiberado = true;
 }
 
 void atualizarMotor()
 {
+  int qualidade = mindwave.quality();
+
+  if (qualidade != 100)
+    botaoDesativado = true;
+    
   atencao = mindwave.attention();
   
   if (atencao > concentracaoNecessaria)
   {
-	// Avança uma posição
+    // Avança uma posição
 
-	alterarPosicaoServo(intervaloPosicao);
+    alterarPosicaoServo(intervaloPosicao);
   }
   else
   {
-	// Volta uma posição
+    // Volta uma posição
 
-	alterarPosicaoServo(intervaloPosicao * -1);
+    alterarPosicaoServo(intervaloPosicao * -1);
   }
 }
 
 void pressionarBotao()
 {
-  if (digitalRead(botao) == HIGH)
-  {
-    leituraBotao = true;
-  }
-  else if (digitalRead(botao) == LOW)
-  {
-    leituraBotao = false;
-  }
+  bool leituraBotao = digitalRead(botao);
+  
+  botaoDesativado = leituraBotao;
 }
 
-void alterarPosicaoServo(intervaloPosicao)
+void alterarPosicaoServo(int intervaloReal)
 {
-  if ((motorLiberado == false) || (leituraBotao == true))
-	return;
+  if (!motorLiberado || botaoDesativado)
+    return;
   
   Serial.println("alterarPosicaoServo");
   
-  posicaoAtual = constrain(posicaoAtual + intervaloPosicao, 0, 180);
+  posicaoAtual = constrain(posicaoAtual + intervaloReal, 0, 180);
 
   s.write(posicaoAtual);
 
@@ -107,7 +107,5 @@ void loop()
   
   pressionarBotao();
 
-  alterarPosicaoServo();
-
-  atualizarMotor();
+  //atualizarMotor();
 }
