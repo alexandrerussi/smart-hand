@@ -22,8 +22,11 @@ bool motorLiberado = true;
 int botao = 12;
 bool botaoDesativado = false;
 
+int botaoBraco = 11;
+
 void setup() {
   pinMode(botao, INPUT);
+  pinMode(botaoBraco, INPUT);
   
   s.attach(SERVO);
   Serial.begin(9600);
@@ -99,6 +102,20 @@ void alterarPosicaoServo(int intervaloReal)
   simpleTimer.setTimeout(duracaoDelay, liberarMovimentacaoMotor);
 }
 
+void pressionarBotaoBraco()
+{
+  bool leituraBotaoBraco = digitalRead(botaoBraco);
+  
+  if (leituraBotaoBraco)
+  {
+    for (posicaoAtual = posicaoAtual; posicaoAtual >= 0; posicaoAtual--)
+    {
+      s.write(posicaoAtual);
+      delay(50);
+    }
+  }
+}
+
 void loop()
 {
   simpleTimer.run();
@@ -106,6 +123,8 @@ void loop()
   mindwave.update(Serial, onMindwaveData);
   
   pressionarBotao();
+
+  pressionarBotaoBraco();
 
   //atualizarMotor();
 }
