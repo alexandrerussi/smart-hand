@@ -21,30 +21,15 @@ bool motorLiberado = true;
 
 int botao = 40;
 bool botaoDesativado = false;
-int botao1 = 41;
-bool botaoDesativado1 = false;
-int botao2 = 42;
-bool botaoDesativado2 = false;
-int botao3 = 43;
-bool botaoDesativado3 = false;
-int botao4 = 44;
-bool botaoDesativado4 = false;
-int botao5 = 45;
-bool botaoDesativado5 = false;
-int botao6 = 46;
-bool botaoDesativado6 = false;
 
 int botaoBraco = 38;
 
+int ledPin = 42;
+
 void setup() {
   pinMode(botao, INPUT);
-  pinMode(botao1, INPUT);
-  pinMode(botao2, INPUT);
-  pinMode(botao3, INPUT);
-  pinMode(botao4, INPUT);
-  pinMode(botao5, INPUT);
-  pinMode(botao6, INPUT);
   pinMode(botaoBraco, INPUT);
+  pinMode(ledPin, OUTPUT)
   
   s.attach(SERVO);
   Serial.begin(9600);
@@ -79,7 +64,14 @@ void atualizarMotor()
   int qualidade = mindwave.quality();
 
   if (qualidade != 100)
+  {
     botaoDesativado = true;
+    digitalWrite(ledPin, HIGH);
+  }
+  else if(qualidade == 100)
+  {
+    digitalWrite(ledPin, LOW);
+  }
     
   atencao = mindwave.attention();
   
@@ -101,29 +93,11 @@ void pressionarBotao()
 {
   bool leituraBotao = digitalRead(botao);
   botaoDesativado = leituraBotao;
-
-  bool leituraBotao1 = digitalRead(botao1);
-  botaoDesativado1 = leituraBotao1;
-
-  bool leituraBotao2 = digitalRead(botao2);
-  botaoDesativado2 = leituraBotao2;
-
-  bool leituraBotao3 = digitalRead(botao3);
-  botaoDesativado3 = leituraBotao3;
-
-  bool leituraBotao4 = digitalRead(botao4);
-  botaoDesativado4 = leituraBotao4;
-
-  bool leituraBotao5 = digitalRead(botao5);
-  botaoDesativado5 = leituraBotao5;
-
-  bool leituraBotao6 = digitalRead(botao6);
-  botaoDesativado6 = leituraBotao6;
 }
 
 void alterarPosicaoServo(int intervaloReal)
 {
-  if (!motorLiberado || botaoDesativado || botaoDesativado1 || botaoDesativado2 || botaoDesativado3 || botaoDesativado4 || botaoDesativado5 || botaoDesativado6)
+  if (!motorLiberado || botaoDesativado)
     return;
   
   Serial.println("alterarPosicaoServo");
