@@ -19,10 +19,10 @@ int intervaloPosicao = 180;
 
 bool motorLiberado = true;
 
-int botao = 12;
+int botao = 40;
 bool botaoDesativado = false;
 
-int botaoBraco = 11;
+int botaoBraco = 38;
 
 void setup() {
   pinMode(botao, INPUT);
