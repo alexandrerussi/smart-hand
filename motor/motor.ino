@@ -15,7 +15,7 @@ int duracaoDelay = 1000;
 
 int atencao = 0;
 int posicaoAtual = 0;
-int intervaloPosicao = 180;
+int intervaloPosicao = 10;
 
 bool motorLiberado = true;
 
@@ -24,9 +24,12 @@ bool botaoDesativado = false;
 
 int botaoBraco = 38;
 
+int ledPin = 42;
+
 void setup() {
   pinMode(botao, INPUT);
   pinMode(botaoBraco, INPUT);
+  pinMode(ledPin, OUTPUT);
   
   s.attach(SERVO);
   Serial.begin(9600);
@@ -61,7 +64,14 @@ void atualizarMotor()
   int qualidade = mindwave.quality();
 
   if (qualidade != 100)
+  {
     botaoDesativado = true;
+    digitalWrite(ledPin, HIGH);
+  }
+  else if(qualidade == 100)
+  {
+    digitalWrite(ledPin, LOW);
+  }
     
   atencao = mindwave.attention();
   
@@ -82,7 +92,6 @@ void atualizarMotor()
 void pressionarBotao()
 {
   bool leituraBotao = digitalRead(botao);
-  
   botaoDesativado = leituraBotao;
 }
 
@@ -93,7 +102,7 @@ void alterarPosicaoServo(int intervaloReal)
   
   Serial.println("alterarPosicaoServo");
   
-  posicaoAtual = constrain(posicaoAtual + intervaloReal, 0, 180);
+  posicaoAtual = constrain(posicaoAtual + intervaloReal, 0, 110);
 
   s.write(posicaoAtual);
 

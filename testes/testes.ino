@@ -15,7 +15,7 @@ int duracaoDelay = 1000;
 
 int atencao = 0;
 int posicaoAtual = 0;
-int intervaloPosicao = 180;
+int intervaloPosicao = 10;
 
 bool motorLiberado = true;
 
@@ -29,7 +29,7 @@ int ledPin = 42;
 void setup() {
   pinMode(botao, INPUT);
   pinMode(botaoBraco, INPUT);
-  pinMode(ledPin, OUTPUT)
+  pinMode(ledPin, OUTPUT);
   
   s.attach(SERVO);
   Serial.begin(9600);
@@ -102,7 +102,7 @@ void alterarPosicaoServo(int intervaloReal)
   
   Serial.println("alterarPosicaoServo");
   
-  posicaoAtual = constrain(posicaoAtual + intervaloReal, 0, 180);
+  posicaoAtual = constrain(posicaoAtual + intervaloReal, 0, 110);
 
   s.write(posicaoAtual);
 
