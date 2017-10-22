@@ -15,7 +15,7 @@ int duracaoDelay = 1000;
 
 int atencao = 0;
 int posicaoAtual = 0;
-int intervaloPosicao = 10;
+int intervaloPosicao = 30;
 
 bool motorLiberado = true;
 
@@ -102,7 +102,7 @@ void alterarPosicaoServo(int intervaloReal)
   
   Serial.println("alterarPosicaoServo");
   
-  posicaoAtual = constrain(posicaoAtual + intervaloReal, 0, 110);
+  posicaoAtual = constrain(posicaoAtual + intervaloReal, 0, 120);
 
   s.write(posicaoAtual);
 
